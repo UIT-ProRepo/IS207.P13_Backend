@@ -2,50 +2,39 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\User;
+use App\Services\AuthService;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller
 {
+    protected $authService;
+
+    public function __construct(AuthService $authService)
+    {
+        $this->authService = $authService;
+    }
+
     public function signup(Request $request)
     {
         $data = $request->validate([
-            'name' => 'required|string',
+            'full_name' => 'required|string',
             'email' => 'required|email|unique:users',
-            'password' => 'required|string|min:6|confirmed',
+            'phone' => 'nullable|string|min:10|max:11',
+            'hashed_password' => 'required|string|min:6|confirmed', // Tên gọi hashed_password nhưng là password chưa hash
+            'gender' => 'required|string|in:male,female,other',
+            'date_of_birth' => 'nullable|date',
         ]);
-        
-        $newUser = User::create($data);
 
-        $token = $newUser->createToken('auth_token')->plainTextToken;
-
-        return response()->json([
-            'user' => $newUser,
-            'access_token' => $token,
-        ]);
+        return $this->authService->signup($data);
     }
     
     public function signin(Request $request)
     {
         $data = $request->validate([
             'email' => 'required|email|exists:users,email',
-            'password' => 'required|string|min:6',
+            'hashed_password' => 'required|string|min:6', // Tên gọi hashed_password nhưng là password chưa hash
         ]);
-        
-        $user = User::where('email', $data['email'])->first();
-
-        if (!$user || !Hash::check($data['password'], $user->password)) {
-            return response()->json([
-                'message' => 'Invalid credentials',
-            ], 401);
-        }
-
-        $token = $user->createToken('auth_token')->plainTextToken;
-
-        return response()->json([
-            'user' => $user,
-            'access_token' => $token,
-        ]);
+       
+        return $this->authService->signin($data);
     }
 }
