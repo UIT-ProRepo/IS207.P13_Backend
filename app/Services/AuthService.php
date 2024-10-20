@@ -16,7 +16,8 @@ class AuthService
 
     public function signup(array $data)
     {
-        $data['hashed_password'] = Hash::make($data['hashed_password']);
+        $data['hashed_password'] = Hash::make($data['password']);
+        unset($data['password']);
 
         $newUser = $this->userRepository->create($data);
 
@@ -32,7 +33,7 @@ class AuthService
     {
         $user = $this->userRepository->findByEmail($data['email']);
 
-        if (!$user || !Hash::check($data['hashed_password'], $user->hashed_password)) {
+        if (!$user || !Hash::check($data['password'], $user->hashed_password)) {
             return response()->json([
                 'message' => 'Invalid credentials',
             ], 401);

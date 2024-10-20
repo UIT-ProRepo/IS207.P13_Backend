@@ -28,14 +28,17 @@ class UserService
     public function createUser(array $data)
     {
         // Hash mật khẩu trước khi lưu
-        $data['hashed_password'] = Hash::make($data['hashed_password']);
+        $data['hashed_password'] = Hash::make($data['password']);
+        unset($data['password']);
+
         return $this->userRepository->create($data);
     }
 
     public function updateUser($id, array $data)
     {
-        if (isset($data['hashed_password'])) {
-            $data['hashed_password'] = Hash::make($data['hashed_password']);
+        if (isset($data['password'])) {
+            $data['hashed_password'] = Hash::make($data['password']);
+            unset($data['password']);
         }
 
         return $this->userRepository->update($id, $data);

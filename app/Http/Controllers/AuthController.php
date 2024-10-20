@@ -19,10 +19,10 @@ class AuthController extends Controller
         $data = $request->validate([
             'full_name' => 'required|string',
             'email' => 'required|email|unique:users',
-            'phone' => 'nullable|string|min:10|max:11',
-            'hashed_password' => 'required|string|min:6|confirmed', // Tên gọi hashed_password nhưng là password chưa hash
+            'phone' => 'required|string|min:10|max:11',
+            'password' => 'required|string|min:6|confirmed',
             'gender' => 'required|string|in:male,female,other',
-            'date_of_birth' => 'nullable|date',
+            'date_of_birth' => 'required|date',
         ]);
 
         return $this->authService->signup($data);
@@ -32,7 +32,7 @@ class AuthController extends Controller
     {
         $data = $request->validate([
             'email' => 'required|email|exists:users,email',
-            'hashed_password' => 'required|string|min:6', // Tên gọi hashed_password nhưng là password chưa hash
+            'password' => 'required|string|min:6',
         ]);
        
         return $this->authService->signin($data);
