@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -45,6 +46,13 @@ Route::middleware(['auth:sanctum', 'role:admin'])->group(function () {
         ]);
     });
 
+    Route::prefix('user')->group(function () {
+        Route::get('/', [UserController::class, 'getAllUsers']);
+        Route::post('/', [UserController::class, 'createUser']);
+        Route::get('/{id}', [UserController::class, 'getUserById'])->where('id', '[0-9]+');
+        Route::patch('/{id}', [UserController::class, 'updateUser'])->where('id', '[0-9]+');
+        Route::delete('/{id}', [UserController::class, 'deleteUser'])->where('id', '[0-9]+');
+    });
     /* Thêm các route khác ở đây */
 });
 
