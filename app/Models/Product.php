@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use NumberFormatter;
 
 class Product extends Model
 {
@@ -10,6 +11,14 @@ class Product extends Model
         'shop_id', 'category_id', 'name', 'unit_price',
         'is_deleted', 'description', 'image_url', 'quantity'
     ];
+
+     // Phương thức để định dạng giá
+    public function getFormattedPriceAttribute()
+    {
+        $formatter = new NumberFormatter('vi_VN', NumberFormatter::CURRENCY);
+        return $formatter->formatCurrency($this->unit_price, 'VND');
+    }
+
 
     public function shop()
     {

@@ -3,6 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\ProductController;
 
 /**
  * 
@@ -68,3 +69,11 @@ Route::middleware(['auth:sanctum', 'role:admin,owner,customer'])->group(function
         ]);
     });
 });
+
+
+Route::apiResource('products', ProductController::class);
+Route::get('/products', [ProductController::class, 'index']); // Lấy tất cả sản phẩm
+Route::post('/products', [ProductController::class, 'store']); // Tạo sản phẩm mới
+Route::get('/products/{id}', [ProductController::class, 'show']); // Lấy sản phẩm theo ID
+Route::put('/products/{id}', [ProductController::class, 'update']); // Cập nhật sản phẩm theo ID
+Route::delete('/products/{id}', [ProductController::class, 'destroy']); // Xóa sản phẩm theo ID
