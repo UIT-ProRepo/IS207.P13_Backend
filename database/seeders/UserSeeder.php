@@ -6,6 +6,7 @@ use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use App\Models\User;
 
 class UserSeeder extends Seeder
 {
@@ -18,7 +19,7 @@ class UserSeeder extends Seeder
          * Tạo dữ liệu mẫu cho role admin
          */
         for ($i = 0; $i < 10; ++$i)  {            
-            DB::table('users')->insert([
+            User::create([
                 'full_name' => '[seed] admin ' . $i,
                 'email' => 'admin' . $i . '@gmail.com',
                 'hashed_password' => Hash::make('123456'),
@@ -33,7 +34,7 @@ class UserSeeder extends Seeder
          * Tạo dữ liệu mẫu cho role owner
          */
         for ($i = 0; $i < 10; ++$i)  {            
-            DB::table('users')->insert([
+            User::create([
                 'full_name' => '[seed] owner ' . $i,
                 'email' => 'owner' . $i . '@gmail.com',
                 'hashed_password' => Hash::make('123456'),
@@ -48,7 +49,7 @@ class UserSeeder extends Seeder
          * Tạo dữ liệu mẫu cho role customer
          */
         for ($i = 0; $i < 10; ++$i)  {            
-            DB::table('users')->insert([
+            User::create([
                 'full_name' => '[seed] customer ' . $i,
                 'email' => 'customer' . $i . '@gmail.com',
                 'hashed_password' => Hash::make('123456'),

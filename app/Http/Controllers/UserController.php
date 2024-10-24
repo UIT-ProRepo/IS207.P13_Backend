@@ -30,7 +30,7 @@ class UserController extends Controller
             'full_name' => 'required|string',
             'email' => 'required|email|unique:users',
             'phone' => 'required|string|min:10|max:11',
-            'password' => 'required|string|min:6', // Không cần confirmed
+            'password' => 'required|string|min:6|confimed',
             'gender' => 'required|string|in:male,female,other',
             'date_of_birth' => 'required|date',
         ]);
@@ -42,11 +42,11 @@ class UserController extends Controller
     {
         $data = $request->validate([
             'full_name' => 'string',
-            'email' => 'email|unique:users',
             'phone' => 'string|min:10|max:11',
-            'password' => 'string|min:6', // không cần confirmed
+            'password' => 'string|min:6|confirmed',
             'gender' => 'string|in:male,female,other',
             'date_of_birth' => 'date',
+            'role' => 'string|in:admin,owner,customer',
         ]);
 
         return $this->userService->updateUser($id, $data);
