@@ -4,6 +4,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\DiscountController;
 
 /**
  * 
@@ -77,3 +79,19 @@ Route::post('/products', [ProductController::class, 'store']); // Tạo sản ph
 Route::get('/products/{id}', [ProductController::class, 'show']); // Lấy sản phẩm theo ID
 Route::put('/products/{id}', [ProductController::class, 'update']); // Cập nhật sản phẩm theo ID
 Route::delete('/products/{id}', [ProductController::class, 'destroy']); // Xóa sản phẩm theo ID
+
+
+Route::apiResource('categories', CategoryController::class);
+Route::get('/categories', [CategoryController::class, 'index']); 
+Route::post('/categories', [CategoryController::class, 'store']); 
+Route::get('/categories/{id}', [CategoryController::class, 'show']); 
+Route::put('/categories/{id}', [CategoryController::class, 'update']); 
+Route::delete('/categories/{id}', [CategoryController::class, 'destroy']);
+
+
+Route::apiResource('discounts', DiscountController::class);
+Route::get('/discounts', [DiscountController::class, 'index']); 
+Route::post('/discounts', [DiscountController::class, 'store']); 
+Route::get('/discounts/{id}', [DiscountController::class, 'show']); 
+Route::put('/discounts/{id}', [DiscountController::class, 'update']); 
+Route::delete('/discounts/{id}', [DiscountController::class, 'destroy']);
