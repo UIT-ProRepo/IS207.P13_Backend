@@ -29,10 +29,8 @@ Route::middleware([])->group(function () {
  * Tất cả các role đều có thể truy cập
  */
 Route::middleware(['auth:sanctum'])->group(function () {
-    Route::get('/me', function (Request $request) {
-        return $request->user();
-    });
-
+    Route::get('/me', [AuthController::class, 'me']);
+    Route::patch('/me', [AuthController::class, 'updateProfile']);
     /* Thêm các route khác ở đây */
 });
 

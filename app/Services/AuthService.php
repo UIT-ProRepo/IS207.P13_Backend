@@ -46,4 +46,9 @@ class AuthService
             'access_token' => $token,
         ]);
     }
+
+    public function updateProfile($id, array $data)
+    {
+        return $this->userRepository->update($id, $data);
+    }
 }
