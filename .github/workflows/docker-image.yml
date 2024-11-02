@@ -1,0 +1,40 @@
+name: Docker Image CI
+
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+    branches: ["main"]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Create env file
+        run: |
+          touch .env
+          echo "${{ secrets.ENV_FILE }}" > .env
+
+      - name: Log in to Docker Hub
+        run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
+
+      - name: Set image tag
+        run: echo "IMAGE_TAG=$(date +%s)" >> $GITHUB_ENV
+
+      - name: Build the Docker image
+        run: docker build . --file Dockerfile --tag nhatoriginal/is207p13-backend:${{ env.IMAGE_TAG }}
+
+      - name: Push the Docker image
+        run: docker push nhatoriginal/is207p13-backend:${{ env.IMAGE_TAG }}
+
+      - name: Tag the Docker image with 'latest' if successful
+        if: success()
+        run: |
+          docker tag nhatoriginal/is207p13-backend:${{ env.IMAGE_TAG }} nhatoriginal/is207p13-backend:latest
+          docker push nhatoriginal/is207p13-backend:latest
+
+      - name: Log out from Docker Hub
+        run: docker logout

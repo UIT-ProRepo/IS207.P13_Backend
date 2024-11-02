@@ -37,4 +37,21 @@ class AuthController extends Controller
        
         return $this->authService->signin($data);
     }
+
+    public function me(Request $request)
+    {
+        return $request->user(); 
+    }
+
+    public function updateProfile(Request $request)
+    {
+        $data = $request->validate([
+            'full_name' => 'string',
+            'phone' => 'string|min:10|max:11', 
+            'gender' => 'string|in:male,female,other',
+            'date_of_birth' => 'date',
+        ]);
+
+        return $this->authService->updateProfile($request->user()->id, $data);
+    }
 }
