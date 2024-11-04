@@ -7,6 +7,8 @@ use NumberFormatter;
 
 class Product extends Model
 {
+    public $timestamps = true; // Giá trị mặc định là true
+
     protected $fillable = [
         'shop_id',
         'category_id',
@@ -15,14 +17,19 @@ class Product extends Model
         'is_deleted',
         'description',
         'image_url',
-        'quantity'
+        'quantity',
     ];
 
-    // Phương thức để định dạng giá
     public function getFormattedPriceAttribute()
     {
         $formatter = new NumberFormatter('vi_VN', NumberFormatter::CURRENCY);
         return $formatter->formatCurrency($this->unit_price, 'VND');
+    }
+    
+    public function getFormattedDiscountedPriceAttribute()
+    {
+        $formatter = new NumberFormatter('vi_VN', NumberFormatter::CURRENCY);
+        return $formatter->formatCurrency($this->discounted_price, 'VND');
     }
 
 
@@ -48,22 +55,37 @@ class Product extends Model
 
     public function getDiscountedPriceAttribute()
     {
-        // Lấy mã giảm giá hiện tại, giả sử chỉ lấy mã giảm giá có hiệu lực hiện tại
+
         $discount = $this->discounts()
             ->where('from_date', '<=', now())
             ->where('to_date', '>=', now())
             ->first();
 
-        // Nếu không có mã giảm giá thì trả về giá gốc
         if (!$discount) {
             return $this->unit_price;
         }
 
-        // Tính giá sau khi áp dụng giảm giá
         if ($discount->is_percent) {
             return $this->unit_price * (1 - $discount->amount / 100);
         } else {
             return max(0, $this->unit_price - $discount->amount);
         }
+    }
+
+
+    public function scopeOrderByPrice($query, $direction = 'asc')
+    {
+        return $query->orderBy('unit_price', $direction);
+    }
+
+   
+    public function scopeSearchByName($query, $name)
+    {
+        return $query->where('name', 'like', '%' . $name . '%');
+    }
+
+    public function scopeOrderByCreatedAt($query, $direction = 'asc')
+    {
+        return $query->orderBy('created_at', $direction);
     }
 }

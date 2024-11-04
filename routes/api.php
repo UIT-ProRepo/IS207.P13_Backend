@@ -85,11 +85,15 @@ Route::middleware(['auth:sanctum', 'role:customer'])->group(function () {
 
 
 Route::apiResource('products', ProductController::class);
-Route::get('/products', [ProductController::class, 'index']); // Lấy tất cả sản phẩm
-Route::post('/products', [ProductController::class, 'store']); // Tạo sản phẩm mới
-Route::get('/products/{id}', [ProductController::class, 'show']); // Lấy sản phẩm theo ID
-Route::put('/products/{id}', [ProductController::class, 'update']); // Cập nhật sản phẩm theo ID
-Route::delete('/products/{id}', [ProductController::class, 'destroy']); // Xóa sản phẩm theo ID
+Route::get('/products', [ProductController::class, 'index']); 
+Route::post('/products', [ProductController::class, 'store']); 
+Route::get('/products/{id}', [ProductController::class, 'show']); 
+Route::put('/products/{id}', [ProductController::class, 'update']); 
+Route::delete('/products/{id}', [ProductController::class, 'destroy']); 
+Route::get('/products/price/{direction}', [ProductController::class, 'getProductsByPrice']);
+Route::get('/products/search/{name}', [ProductController::class, 'searchProductsByName']);
+Route::get('/products/created_at/{direction}', [ProductController::class, 'getProductsByCreatedAt']);
+
 
 
 Route::apiResource('categories', CategoryController::class);

@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Product;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
+
 
 class ProductController extends Controller
 {
@@ -51,12 +53,14 @@ class ProductController extends Controller
             'category_id' => $product->category_id,
             'name' => $product->name,
             'unit_price' => $product->formatted_price, // Sử dụng phương thức định dạng
+            'discounted_price' => $product->formatted_discounted_price, // Giá sau giảm giá
             'description' => $product->description,
             'image_url' => $product->image_url,
             'is_deleted' => $product->is_deleted,
             'quantity' => $product->quantity,
             'created_at' => $product->created_at,
             'updated_at' => $product->updated_at,
+            'discounts' => $product->discounts, // Danh sách các mã giảm giá (tùy chọn)
         ]);
     }
 
@@ -92,4 +96,26 @@ class ProductController extends Controller
         $product->delete();
         return response()->json(null, 204);
     }
+ 
+    public function getProductsByCreatedAt($direction = 'asc')
+    {
+        $products = Product::orderBy('created_at', $direction)->get();
+        return response()->json($products);
+    }
+
+
+   
+    public function getProductsByPrice($direction = 'asc')
+    {
+        $products = Product::orderByPrice($direction)->get();
+        return response()->json($products);
+    }
+
+   
+    public function searchProductsByName($name)
+    {
+        $products = Product::searchByName($name)->get();
+        return response()->json($products);
+    }
+
 }
