@@ -2,6 +2,9 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\DiscountController;
+use App\Http\Controllers\ProductController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -79,3 +82,28 @@ Route::middleware(['auth:sanctum', 'role:customer'])->group(function () {
 
     /* Thêm các route khác ở đây */
 });
+
+Route::apiResource('products', ProductController::class);
+Route::get('/products', [ProductController::class, 'index']); 
+Route::post('/products', [ProductController::class, 'store']); 
+Route::get('/products/{id}', [ProductController::class, 'show']); 
+Route::put('/products/{id}', [ProductController::class, 'update']); 
+Route::delete('/products/{id}', [ProductController::class, 'destroy']); 
+Route::get('/products/price/{direction}', [ProductController::class, 'getProductsByPrice']);
+Route::get('/products/search/{name}', [ProductController::class, 'searchProductsByName']);
+Route::get('/products/created_at/{direction}', [ProductController::class, 'getProductsByCreatedAt']);
+
+
+Route::apiResource('categories', CategoryController::class);
+Route::get('/categories', [CategoryController::class, 'index']); 
+Route::post('/categories', [CategoryController::class, 'store']); 
+Route::get('/categories/{id}', [CategoryController::class, 'show']); 
+Route::put('/categories/{id}', [CategoryController::class, 'update']); 
+Route::delete('/categories/{id}', [CategoryController::class, 'destroy']);
+
+Route::apiResource('discounts', DiscountController::class);
+Route::get('/discounts', [DiscountController::class, 'index']); 
+Route::post('/discounts', [DiscountController::class, 'store']); 
+Route::get('/discounts/{id}', [DiscountController::class, 'show']); 
+Route::put('/discounts/{id}', [DiscountController::class, 'update']); 
+Route::delete('/discounts/{id}', [DiscountController::class, 'destroy']);
