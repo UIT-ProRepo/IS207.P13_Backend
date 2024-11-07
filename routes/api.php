@@ -5,6 +5,9 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\DiscountController;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\ShopController;
+use App\Http\Controllers\AddressController;
+use App\Http\Controllers\ReviewController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -107,3 +110,51 @@ Route::post('/discounts', [DiscountController::class, 'store']);
 Route::get('/discounts/{id}', [DiscountController::class, 'show']); 
 Route::put('/discounts/{id}', [DiscountController::class, 'update']); 
 Route::delete('/discounts/{id}', [DiscountController::class, 'destroy']);
+
+Route::middleware('auth:sanctum')->group(function () {
+    // Lấy danh sách tất cả các shops
+    Route::get('/shops', [ShopController::class, 'index'])->name('shops.index');
+
+    // Tạo mới một shop
+    Route::post('/shops', [ShopController::class, 'store'])->name('shops.store');
+
+    // Lấy thông tin chi tiết của một shop
+    Route::get('/shops/{shop}', [ShopController::class, 'show'])->name('shops.show');
+
+    // Cập nhật một shop
+    Route::put('/shops/{shop}', [ShopController::class, 'update'])->name('shops.update');
+
+    // Xóa một shop
+    Route::delete('/shops/{shop}', [ShopController::class, 'destroy'])->name('shops.destroy');
+});
+
+Route::prefix('addresses')->group(function () {
+    Route::get('/', [AddressController::class, 'index']); // Lấy tất cả địa chỉ
+    Route::get('{id}', [AddressController::class, 'show']); // Lấy địa chỉ theo ID
+    Route::post('/', [AddressController::class, 'store']); // Thêm mới địa chỉ
+    Route::put('{id}', [AddressController::class, 'update']); // Cập nhật địa chỉ
+    Route::delete('{id}', [AddressController::class, 'destroy']); // Xóa địa chỉ
+});
+
+
+Route::middleware('auth:sanctum')->group(function () {
+    // Lấy danh sách các review (admin xem tất cả, người dùng bình thường chỉ xem review đã duyệt)
+    Route::get('/reviews', [ReviewController::class, 'index'])->name('reviews.index');
+
+    // Tạo một review mới
+    Route::post('/reviews', [ReviewController::class, 'store'])->name('reviews.store');
+
+    // Lấy thông tin chi tiết của một review (chỉ xem nếu review đã được duyệt hoặc người dùng là admin)
+    Route::get('/reviews/{review}', [ReviewController::class, 'show'])->name('reviews.show');
+
+    // Cập nhật review (chỉ người dùng tạo review hoặc admin mới có thể sửa)
+    Route::put('/reviews/{review}', [ReviewController::class, 'update'])->name('reviews.update');
+
+    // Xóa review (chỉ người dùng tạo review hoặc admin mới có thể xóa)
+    Route::delete('/reviews/{review}', [ReviewController::class, 'destroy'])->name('reviews.destroy');
+
+    // Duyệt review (admin)
+    Route::put('/reviews/{review}/is_approved', [ReviewController::class, 'approve'])->name('reviews.is_approved');
+});
+
+

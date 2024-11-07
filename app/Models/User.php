@@ -6,6 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
+use Illuminate\Foundation\Auth\User as Authenticatable;
+
 
 class User extends Model
 {
@@ -36,4 +38,10 @@ class User extends Model
         return $this->belongsToMany(Product::class, 'user_cart_products')
                     ->withPivot('quantity');
     }
+
+    public function getAuthIdentifier()
+    {
+        return $this->getKey(); // Hoặc trả về id của user
+    }
+
 }
