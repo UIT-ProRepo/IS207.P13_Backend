@@ -29,11 +29,31 @@ class Order extends Model
 
     public function shippingProvider()
     {
-        return $this->belongsTo(ShippingProvider::class);
+        return $this->belongsTo(ShippingProvider::class, 'shipping_provider_id');
     }
 
     public function orderDetails()
     {
         return $this->hasMany(OrderDetail::class);
+    }
+
+    /**
+     * Kiểm tra nếu trạng thái đơn hàng là 'Pending'.
+     */
+    public function isPending()
+    {
+        return $this->delivery_status === 'Pending';
+    }
+
+    /**
+     * Cập nhật trạng thái đơn hàng thành 'Fail'.
+     */
+    public function markAsFailed()
+    {
+        if ($this->isPending()) {
+            $this->update(['delivery_status' => 'Fail']);
+            return true;
+        }
+        return false;
     }
 }

@@ -24,7 +24,7 @@ class Product extends Model
         $formatter = new NumberFormatter('vi_VN', NumberFormatter::CURRENCY);
         return $formatter->formatCurrency($this->unit_price, 'VND');
     }
-    
+
     public function getFormattedDiscountedPriceAttribute()
     {
         $formatter = new NumberFormatter('vi_VN', NumberFormatter::CURRENCY);
@@ -52,6 +52,11 @@ class Product extends Model
         return $this->hasMany(Discount::class);
     }
 
+    public function orderDetails()
+    {
+        return $this->hasMany(OrderDetail::class);
+    }
+
     public function getDiscountedPriceAttribute()
     {
 
@@ -75,7 +80,7 @@ class Product extends Model
     {
         return $query->orderBy('unit_price', $direction);
     }
-   
+
     public function scopeSearchByName($query, $name)
     {
         return $query->where('name', 'like', '%' . $name . '%');
