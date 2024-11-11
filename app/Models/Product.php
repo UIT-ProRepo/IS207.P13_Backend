@@ -19,6 +19,10 @@ class Product extends Model
         'quantity',
     ];
 
+    protected $casts = [
+        'is_deleted' => 'boolean',
+    ];
+
     public function getFormattedPriceAttribute()
     {
         $formatter = new NumberFormatter('vi_VN', NumberFormatter::CURRENCY);

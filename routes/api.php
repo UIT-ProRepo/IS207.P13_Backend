@@ -8,6 +8,7 @@ use App\Http\Controllers\ProductController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\OrderDetailController;
 use App\Http\Controllers\ShippingProviderController;
+use App\Http\Controllers\ShopController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -96,7 +97,6 @@ Route::get('/products/price/{direction}', [ProductController::class, 'getProduct
 Route::get('/products/search/{name}', [ProductController::class, 'searchProductsByName']);
 Route::get('/products/created_at/{direction}', [ProductController::class, 'getProductsByCreatedAt']);
 
-
 Route::apiResource('categories', CategoryController::class);
 Route::get('/categories', [CategoryController::class, 'index']);
 Route::post('/categories', [CategoryController::class, 'store']);
@@ -129,10 +129,11 @@ Route::post('orders/{id}/fail', [OrderController::class, 'failOrder']);
 Route::get('orders/status/{status}', [OrderController::class, 'filterOrdersByStatus']);
 Route::get('/orders/{orderId}/calculate-total-price', [OrderController::class, 'calculateTotalPrice']);
 
-
 Route::resource('order_details', OrderDetailController::class);
 Route::get('/order_details', [OrderDetailController::class, 'index']);
 Route::post('/order_details', [OrderDetailController::class, 'store']);
 Route::get('/order_details/{id}', [OrderDetailController::class, 'show']);
 Route::put('/order_details/{id}', [OrderDetailController::class, 'update']);
 Route::delete('/order_details/{id}', [OrderDetailController::class, 'destroy']);
+
+Route::resource('shop', ShopController::class);
