@@ -10,6 +10,10 @@ class Discount extends Model
         'product_id', 'is_percent', 'amount', 'from_date', 'to_date'
     ];
 
+    protected $casts = [
+        'is_percent' => 'boolean',
+    ];
+
     public function product()
     {
         return $this->belongsTo(Product::class);

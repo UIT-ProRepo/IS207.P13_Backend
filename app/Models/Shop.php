@@ -8,6 +8,10 @@ class Shop extends Model
 {
     protected $fillable = ['name', 'phone', 'is_alive', 'owner_id', 'address_id'];
 
+    protected $casts = [
+        'is_alive' => 'boolean',
+    ];
+
     public function owner()
     {
         return $this->belongsTo(User::class, 'owner_id');
