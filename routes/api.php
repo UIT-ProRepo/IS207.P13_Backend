@@ -7,6 +7,7 @@ use App\Http\Controllers\DiscountController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\OrderDetailController;
+use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\ShippingProviderController;
 use App\Http\Controllers\ShopController;
 use Illuminate\Http\Request;
@@ -137,3 +138,5 @@ Route::put('/order_details/{id}', [OrderDetailController::class, 'update']);
 Route::delete('/order_details/{id}', [OrderDetailController::class, 'destroy']);
 
 Route::resource('shop', ShopController::class);
+
+Route::resource('review', ReviewController::class);
