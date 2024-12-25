@@ -32,27 +32,29 @@ class OrderController extends Controller
             'delivery_status' => 'required|in:Pending,Success,Fail',
         ]);
 
-        // Tạo đơn hàng không cần `total_price` tại thời điểm tạo
         $order = Order::create(array_merge($validatedData, ['total_price' => 0]));
+
+        // Tính lại tổng giá trị nếu có OrderDetail được tạo
+        $this->calculateTotalPrice($order->id);
 
         return response()->json($order, 201);
     }
-
 
     /**
      * Display the specified resource.
      */
     public function show(Order $order)
     {
-        // Tính lại `total_price` nếu cần
-        $totalPrice = $order->orderDetails->sum(function ($detail) {
-            return $detail->quantity * ($detail->product->price ?? 0);
-        });
+        // Tính lại tổng giá tiền của order
+        $this->calculateTotalPrice($order->id);
+        $order->refresh(); // Refresh để lấy total_price đã được cập nhật
 
-        // Cập nhật giá trị `total_price` trong `Order` và lưu lại
-        $order->update(['total_price' => $totalPrice]);
+        // Load order details liên quan
+        $order->load('orderDetails.product'); // Giả sử bạn đã thiết lập quan hệ hasMany
 
-        return response()->json($order);
+        return response()->json([
+            'order' => $order,
+        ]);
     }
 
     /**
@@ -61,7 +63,7 @@ class OrderController extends Controller
     public function update(Request $request, Order $order)
     {
         $validatedData = $request->validate([
-            'user_id' => 'exists:users,id', // Không cần 'required'
+            'user_id' => 'exists:users,id',
             'shop_id' => 'exists:shops,id',
             'shipping_provider_id' => 'exists:shipping_providers,id',
             'address_id' => 'exists:addresses,id',
@@ -71,20 +73,16 @@ class OrderController extends Controller
             'delivery_status' => 'in:Pending,Success,Fail',
         ]);
 
-        // Áp dụng dữ liệu mới vào model Order, chỉ cập nhật các trường có thay đổi
         $order->fill($validatedData);
 
-        // Kiểm tra và lưu chỉ khi có sự thay đổi
         if ($order->isDirty()) {
             $order->save();
+            $this->calculateTotalPrice($order->id);
             return response()->json($order, 200);
         }
 
-        // Trả về thông báo nếu không có thay đổi
         return response()->json(['message' => 'No changes were made to the order.'], 200);
     }
-
-
 
     /**
      * Remove the specified resource from storage.
@@ -135,20 +133,17 @@ class OrderController extends Controller
 
     public function calculateTotalPrice($orderId)
     {
-        // Lấy order và liên kết với order details và product
         $order = Order::with('orderDetails.product')->findOrFail($orderId);
 
-        // Tính tổng giá trị của đơn hàng
-        $totalPrice = $order->orderDetails->sum(function ($orderDetail) {
-            return $orderDetail->quantity * ($orderDetail->product->price ?? 0);
+        $totalPrice = $order->orderDetails->sum(function ($detail) {
+            return $detail->quantity * ($detail->product->unit_price ?? 0);
         });
 
-        // Cập nhật giá trị total_price và lưu lại order
         $order->update(['total_price' => $totalPrice]);
 
         return response()->json([
             'total_price' => $totalPrice,
-            'order' => $order
+            'order' => $order,
         ]);
     }
 }
