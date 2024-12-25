@@ -45,10 +45,16 @@ class OrderController extends Controller
      */
     public function show(Order $order)
     {
+        // Tính lại tổng giá tiền của order
         $this->calculateTotalPrice($order->id);
-        $order->refresh(); // Refresh to get the updated total_price
+        $order->refresh(); // Refresh để lấy total_price đã được cập nhật
 
-        return response()->json($order);
+        // Load order details liên quan
+        $order->load('orderDetails.product'); // Giả sử bạn đã thiết lập quan hệ hasMany
+
+        return response()->json([
+            'order' => $order,
+        ]);
     }
 
     /**
