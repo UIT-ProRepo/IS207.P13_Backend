@@ -25,14 +25,16 @@ class Product extends Model
 
     public function getFormattedPriceAttribute()
     {
-        $formatter = new NumberFormatter('vi_VN', NumberFormatter::CURRENCY);
-        return $formatter->formatCurrency($this->unit_price, 'VND');
+        // $formatter = new NumberFormatter('vi_VN', NumberFormatter::CURRENCY);
+        // return $formatter->formatCurrency($this->unit_price, 'VND');
+        return number_format($this->unit_price, 0, ',', '.') . ' ₫';
     }
 
     public function getFormattedDiscountedPriceAttribute()
     {
-        $formatter = new NumberFormatter('vi_VN', NumberFormatter::CURRENCY);
-        return $formatter->formatCurrency($this->discounted_price, 'VND');
+        // $formatter = new NumberFormatter('vi_VN', NumberFormatter::CURRENCY);
+        // return $formatter->formatCurrency($this->discounted_price, 'VND');
+        return number_format($this->discounted_price, 0, ',', '.') . ' ₫';
     }
 
 
