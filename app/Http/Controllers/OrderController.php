@@ -13,6 +13,7 @@ class OrderController extends Controller
     public function index()
     {
         $orders = Order::all();
+        $orders->load('orderDetails.product');
         return response()->json($orders);
     }
 
