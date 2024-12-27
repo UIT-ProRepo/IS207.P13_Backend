@@ -47,11 +47,15 @@ class OrderController extends Controller
 
         $shippingProvider = ShippingProvider::inRandomOrder()->first();
 
+        $deliveryStatuses = ['Fail', 'Success'];
+        $randomDeliveryStatus = $deliveryStatuses[array_rand($deliveryStatuses)];
+
+
         $orderData = array_merge($validatedData['order'], [
             'order_date' => $orderDate,
             'address_id' => $address->id,
             'shipping_provider_id' => $shippingProvider->id,
-            'delivery_status' => 'Pending',
+            'delivery_status' => $randomDeliveryStatus,
         ]);
         $order = Order::create($orderData);
 
