@@ -7,6 +7,7 @@ use App\Http\Controllers\DiscountController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\OrderDetailController;
+use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\ShippingProviderController;
 use App\Http\Controllers\ShopController;
@@ -140,3 +141,9 @@ Route::delete('/order_details/{id}', [OrderDetailController::class, 'destroy']);
 Route::resource('shop', ShopController::class);
 
 Route::resource('review', ReviewController::class);
+
+Route::prefix('vn_pay')->group(function () {
+    Route::get('/get_payment_url', [PaymentController::class, 'getPaymentUrl']);
+    Route::get('/return', [PaymentController::class, 'return']);
+});
+

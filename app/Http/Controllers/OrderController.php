@@ -42,12 +42,14 @@ class OrderController extends Controller
 
         $orderDate = \Carbon\Carbon::parse($validatedData['order']['order_date'])->format('Y-m-d H:i:s');
 
+
         $address = Address::create($validatedData['address']);
 
         $shippingProvider = ShippingProvider::inRandomOrder()->first();
 
         $deliveryStatuses = ['Fail', 'Success'];
         $randomDeliveryStatus = $deliveryStatuses[array_rand($deliveryStatuses)];
+
 
         $orderData = array_merge($validatedData['order'], [
             'order_date' => $orderDate,
