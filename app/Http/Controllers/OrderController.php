@@ -34,7 +34,6 @@ class OrderController extends Controller
 
         $order = Order::create(array_merge($validatedData, ['total_price' => 0]));
 
-        // Tính lại tổng giá trị nếu có OrderDetail được tạo
         $this->calculateTotalPrice($order->id);
 
         return response()->json($order, 201);
