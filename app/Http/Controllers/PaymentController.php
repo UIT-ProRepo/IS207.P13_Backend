@@ -16,7 +16,7 @@ class PaymentController extends Controller
             $vnp_TmnCode = "LSXIPOBM";
             $vnp_HashSecret = "H5NI6H36V1HQPDW4UT9NE41Y8LY1JV0X";
             $vnp_Url = "https://sandbox.vnpayment.vn/paymentv2/vpcpay.html";
-            $vnp_Returnurl = "http://localhost:3000/user/return-vnpay";
+            $vnp_Returnurl = "https://is-207-p13-frontend.vercel.app/user/return-vnpay";
 
             $vnp_TxnRef = date("YmdHis");
             $vnp_OrderInfo = "Thanh toán hóa đơn phí dịch vụ";
