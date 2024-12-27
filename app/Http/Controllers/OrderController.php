@@ -3,6 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\Order;
+use App\Models\OrderDetail;
+use App\Models\Address;
+use App\Models\ShippingProvider;
+
 use Illuminate\Http\Request;
 
 class OrderController extends Controller
@@ -13,6 +17,7 @@ class OrderController extends Controller
     public function index()
     {
         $orders = Order::all();
+        $orders->load('orderDetails.product');
         return response()->json($orders);
     }
 
@@ -22,21 +27,53 @@ class OrderController extends Controller
     public function store(Request $request)
     {
         $validatedData = $request->validate([
-            'user_id' => 'required|exists:users,id',
-            'shop_id' => 'required|exists:shops,id',
-            'shipping_provider_id' => 'required|exists:shipping_providers,id',
-            'address_id' => 'required|exists:addresses,id',
-            'order_date' => 'required|date',
-            'note' => 'nullable|string|max:100',
-            'payment_method' => 'required|in:Cash,CreditCard',
-            'delivery_status' => 'required|in:Pending,Success,Fail',
+            'order.user_id' => 'required|exists:users,id',
+            'order.order_date' => 'required|date',
+            'order.total_price' => 'required|numeric',
+            'order.payment_method' => 'required|in:Cash,CreditCard',
+            'order.order_items' => 'required|array|min:1',
+            'order.order_items.*.id' => 'required|exists:products,id',
+            'order.order_items.*.quantity' => 'required|integer|min:1',
+            'address.province' => 'required|string',
+            'address.district' => 'required|string',
+            'address.ward' => 'required|string',
+            'address.detail' => 'required|string',
         ]);
 
-        $order = Order::create(array_merge($validatedData, ['total_price' => 0]));
+        $orderDate = \Carbon\Carbon::parse($validatedData['order']['order_date'])->format('Y-m-d H:i:s');
 
-        $this->calculateTotalPrice($order->id);
 
-        return response()->json($order, 201);
+        $address = Address::create($validatedData['address']);
+
+        $shippingProvider = ShippingProvider::inRandomOrder()->first();
+
+        $deliveryStatuses = ['Fail', 'Success'];
+        $randomDeliveryStatus = $deliveryStatuses[array_rand($deliveryStatuses)];
+
+
+        $orderData = array_merge($validatedData['order'], [
+            'order_date' => $orderDate,
+            'address_id' => $address->id,
+            'shipping_provider_id' => $shippingProvider->id,
+            'delivery_status' => $randomDeliveryStatus,
+        ]);
+        $order = Order::create($orderData);
+
+        $orderItems = $validatedData['order']['order_items'];
+        foreach ($orderItems as $item) {
+            OrderDetail::create([
+                'order_id' => $order->id,
+                'product_id' => $item['id'],
+                'quantity' => $item['quantity'],
+            ]);
+        }
+
+        return response()->json([
+            'message' => 'Order created successfully.',
+            'order' => $order,
+            'address' => $address,
+            'shipping_provider' => $shippingProvider,
+        ], 201);
     }
 
     /**

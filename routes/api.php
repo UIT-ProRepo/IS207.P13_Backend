@@ -146,3 +146,4 @@ Route::prefix('vn_pay')->group(function () {
     Route::get('/get_payment_url', [PaymentController::class, 'getPaymentUrl']);
     Route::get('/return', [PaymentController::class, 'return']);
 });
+
