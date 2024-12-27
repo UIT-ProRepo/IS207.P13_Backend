@@ -143,7 +143,7 @@ Route::resource('shop', ShopController::class);
 Route::resource('review', ReviewController::class);
 
 Route::prefix('vn_pay')->group(function () {
-    Route::get('/get_payment_url', [PaymentController::class, 'getPaymentUrl']);
-    Route::get('/return', [PaymentController::class, 'return']);
+    Route::post('/get_payment_url', [PaymentController::class, 'getPaymentUrl']);
+    Route::post('/return', [PaymentController::class, 'return']);
 });
 
